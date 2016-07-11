@@ -11,8 +11,7 @@ import kasogg.com.imageselector.resourceselect.ResourceSelectActivity;
 
 public class MainActivity extends XLBaseActivity {
     public static final int REQUEST_SELECT_IMAGE = 1001;
-    private ArrayList<String> mSelectedImageList;
-    private ArrayList<String> mSelectedVideoList;
+    private ArrayList<String> mSelectedList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +28,8 @@ public class MainActivity extends XLBaseActivity {
         findViewById(R.id.tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ResourceSelectActivity.show(MainActivity.this, REQUEST_SELECT_IMAGE, ResourceSelectActivity.SwitchType.IMAGE_AND_VIDEO, mSelectedImageList, 9);
+                ResourceSelectActivity.showThirdParty(MainActivity.this, REQUEST_SELECT_IMAGE, ResourceSelectActivity.SelectType.ALL, mSelectedList, 9, 1, 9, 9, null,
+                        "云盘");
             }
         });
     }
@@ -40,8 +40,8 @@ public class MainActivity extends XLBaseActivity {
         if (requestCode == REQUEST_SELECT_IMAGE) {
             switch (resultCode) {
                 case ResourceSelectActivity.RESULT_SELECTED:
-                    mSelectedImageList = (ArrayList<String>) data.getSerializableExtra(ResourceSelectActivity.PARAM_SELECTED_RESULT_LIST);
-                    Toast.makeText(getApplicationContext(), "大小" + mSelectedImageList.size() + "张", Toast.LENGTH_SHORT).show();
+                    mSelectedList = (ArrayList<String>) data.getSerializableExtra(ResourceSelectActivity.PARAM_SELECTED_LIST);
+                    Toast.makeText(getApplicationContext(), "大小" + mSelectedList.size() + "张", Toast.LENGTH_SHORT).show();
             }
         }
     }

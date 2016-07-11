@@ -18,10 +18,9 @@ import kasogg.com.imageselector.resourceselect.imageloader.ImageLoader;
 import kasogg.com.imageselector.resourceselect.model.ResourceItem;
 
 public class ResourceSelectAdapter extends RecyclerView.Adapter<ResourceSelectAdapter.ViewHolder> {
-
-    private List<ResourceItem> mResourceItemList;
-    private Context mContext;
-    private OnItemClickListener mOnItemClickListener;
+    protected List<ResourceItem> mResourceItemList;
+    protected Context mContext;
+    protected OnItemClickListener mOnItemClickListener;
 
     public ResourceSelectAdapter(Context context, List<ResourceItem> resourceItemList) {
         mResourceItemList = resourceItemList;

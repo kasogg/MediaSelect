@@ -16,8 +16,9 @@ import java.util.Locale;
 
 import kasogg.com.imageselector.R;
 import kasogg.com.imageselector.XLBaseFragment;
+import kasogg.com.imageselector.resourceselect.constants.ImageSelectConstants;
 import kasogg.com.imageselector.resourceselect.ResourceSelectActivity;
-import kasogg.com.imageselector.resourceselect.ResourceSelectActivity.SwitchType;
+import kasogg.com.imageselector.resourceselect.ResourceSelectActivity.SelectType;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceSelectAdapter;
 import kasogg.com.imageselector.resourceselect.imagefetcher.ResourceFetcher;
 import kasogg.com.imageselector.resourceselect.model.ResourceBucket;
@@ -30,13 +31,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class BaseSelectFragment extends XLBaseFragment implements ResourceSelectAdapter.OnItemClickListener {
-    public static final String PARAM_SELECTED_LIST = "PARAM_SELECTED_RESULT_LIST";
-    public static final String PARAM_FILE_TYPE = "PARAM_FILE_TYPE";
-    public static final String PARAM_SELECT_TYPE = "PARAM_SELECT_TYPE";
-    public static final String PARAM_MAX_COUNT = "PARAM_MAX_COUNT";
-    protected static final int DEFAULT_MAX_COUNT = 9;
-    protected static final int COLUMN_COUNT = 4;
-
     protected OnFragmentInteractionListener mListener;
 
     protected TextView mTvBucketChoose;
@@ -46,10 +40,12 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
     protected List<ResourceBucket> mBucketList;
     protected List<ResourceItem> mResourceItemList;
 
-    protected ArrayList<String> mSelectedList = new ArrayList<>();
+    protected ArrayList<ResourceItem> mSelectedList = new ArrayList<>();
     protected int mMaxCount;
+    protected int mPageMaxCount;
     protected int mFileType = ResourceSelectActivity.FILE_TYPE_IMAGE;
-    protected SwitchType mSwitchType;
+    protected SelectType mSelectType;
+    protected String mToastStr;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,12 +60,9 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
 
     protected void initParams() {
         if (getArguments() != null) {
-            mMaxCount = getArguments().getInt(PARAM_MAX_COUNT, DEFAULT_MAX_COUNT);
-            mSwitchType = (SwitchType) getArguments().getSerializable(PARAM_SELECT_TYPE);
-            mSelectedList = (ArrayList<String>) getArguments().getSerializable(PARAM_SELECTED_LIST);
-        }
-        if (mSelectedList == null) {
-            mSelectedList = new ArrayList<>();
+            mMaxCount = getArguments().getInt(ImageSelectConstants.PARAM_MAX_COUNT, ImageSelectConstants.DEFAULT_MAX_COUNT);
+            mPageMaxCount = getArguments().getInt(ImageSelectConstants.PARAM_PAGE_MAX_COUNT, ImageSelectConstants.DEFAULT_IMAGE_MAX_COUNT);
+            mSelectType = (SelectType) getArguments().getSerializable(ImageSelectConstants.PARAM_SELECT_TYPE);
         }
         mFileType = ResourceSelectActivity.FILE_TYPE_IMAGE;
     }
@@ -79,11 +72,15 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
         mTvBucketChoose = bindViewWithClick(R.id.tv_bucket_choose);
         mTvPreview = bindViewWithClick(R.id.tv_preview);
         RecyclerView recyclerView = bindView(R.id.rv_list_resource_select);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN_COUNT));
-        mAdapter = new ResourceSelectAdapter(getActivity(), mResourceItemList);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), ImageSelectConstants.COLUMN_COUNT));
+        initAdapter();
         mAdapter.setOnItemClickListener(this);
         recyclerView.setAdapter(mAdapter);
-        initTabContent();
+        mTvPreview.setEnabled(mSelectedList.size() > 0);
+    }
+
+    protected void initAdapter() {
+        mAdapter = new ResourceSelectAdapter(getActivity(), mResourceItemList);
     }
 
     @Override
@@ -128,44 +125,49 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
 
     @Override
     public void onAddClick(ResourceSelectAdapter.ViewHolder viewHolder) {
-        //TODO 拍照 视频
-        Toast.makeText(getContext(), "拍照", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void onItemClick(ResourceSelectAdapter.ViewHolder viewHolder, int position, ResourceItem item) {
+        ArrayList<String> commonSelectedList = mListener.getSelectedList();
         if (!item.isSelected) {
-            mSelectedList.remove(item.sourcePath);
-        } else if (mSelectedList.size() < mMaxCount) {
-            mSelectedList.add(item.sourcePath);
+            mSelectedList.remove(item);
+            commonSelectedList.remove(item.sourcePath);
+        } else if (commonSelectedList.size() < mMaxCount && getSelectedList().size() < mPageMaxCount) {
+            mSelectedList.add(item);
+            commonSelectedList.add(item.sourcePath);
         } else {
             mAdapter.selectItem(viewHolder, item, false);
-            Toast.makeText(getContext(), String.format(Locale.getDefault(), "您最多能选择%d个资源", mMaxCount), Toast.LENGTH_SHORT).show();
+            if (commonSelectedList.size() >= mMaxCount) {
+                Toast.makeText(getContext(), String.format(Locale.getDefault(), "您最多能选择%d个资源", mMaxCount), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), mToastStr, Toast.LENGTH_SHORT).show();
+            }
         }
-        int selectedCount = mSelectedList.size();
-        mTvPreview.setEnabled(selectedCount > 0);
-        mListener.onSelectedListChange(selectedCount, mMaxCount);
+        mTvPreview.setEnabled(mSelectedList.size() > 0);
+        if (mSelectType == SelectType.IMAGE_AND_VIDEO || mSelectType == SelectType.ALL) {
+            mListener.onSelectedListChange(commonSelectedList.size(), mMaxCount);
+        } else {
+            mListener.onSelectedListChange(getSelectedList().size(), mMaxCount);
+        }
     }
 
-    private void initTabContent() {
-        int selectedCount = mSelectedList.size();
-        mTvPreview.setEnabled(selectedCount > 0);
-        mListener.onSelectedListChange(selectedCount, mMaxCount);
-    }
-
-    private void filterSelectedResource() {
-        if (mSelectedList.size() <= 0) {
+    protected void filterSelectedResource() {
+        final ArrayList<String> commonSelectedList = mListener.getSelectedList();
+        if (commonSelectedList.size() <= 0) {
             return;
         }
         Observable.from(mResourceItemList).filter(new Func1<ResourceItem, Boolean>() {
             @Override
             public Boolean call(ResourceItem resourceItem) {
-                return mSelectedList.contains(resourceItem.sourcePath);
+                return commonSelectedList.contains(resourceItem.sourcePath);
             }
         }).subscribe(new Action1<ResourceItem>() {
             @Override
             public void call(ResourceItem resourceItem) {
                 resourceItem.isSelected = true;
+                mSelectedList.add(resourceItem);
             }
         });
     }
@@ -179,13 +181,10 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
                     mPopupWindow.showAtLocation(mTvBucketChoose);
                 }
                 break;
-            case R.id.tv_preview:
-                //TODO 打开预览图片
-                break;
         }
     }
 
-    public ArrayList<String> getSelectedList() {
+    public ArrayList<ResourceItem> getSelectedList() {
         return mSelectedList;
     }
 
@@ -207,5 +206,7 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
 
     public interface OnFragmentInteractionListener {
         void onSelectedListChange(int selectedCount, int maxCount);
+
+        ArrayList<String> getSelectedList();
     }
 }

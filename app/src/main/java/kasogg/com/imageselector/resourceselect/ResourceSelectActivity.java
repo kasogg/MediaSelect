@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
@@ -17,38 +17,59 @@ import java.util.Locale;
 import kasogg.com.imageselector.R;
 import kasogg.com.imageselector.XLBaseActivity;
 import kasogg.com.imageselector.XLBaseFragment;
+import kasogg.com.imageselector.resourceselect.constants.ImageSelectConstants;
 import kasogg.com.imageselector.resourceselect.fragment.BaseSelectFragment;
 import kasogg.com.imageselector.resourceselect.fragment.ImageSelectFragment;
+import kasogg.com.imageselector.resourceselect.fragment.ThirdPartySelectFragment;
 import kasogg.com.imageselector.resourceselect.fragment.VideoSelectFragment;
 
 public class ResourceSelectActivity extends XLBaseActivity implements BaseSelectFragment.OnFragmentInteractionListener {
     public static final int RESULT_SELECTED = 1;
     public static final int FILE_TYPE_IMAGE = 1;
     public static final int FILE_TYPE_VIDEO = 2;
+    public static final int FILE_TYPE_OTHER = 3;
 
     public static final String PARAM_SELECTED_LIST = "PARAM_SELECTED_LIST";
-    public static final String PARAM_SELECTED_RESULT_LIST = "PARAM_SELECTED_RESULT_LIST";
-    public static final String PARAM_SWITCH_TYPE = "PARAM_SWITCH_TYPE";
-    public static final String PARAM_MAX_COUNT = "PARAM_MAX_COUNT";
-    private static final int DEFAULT_IMAGE_MAX_COUNT = 9;
+    public static final String PARAM_THIRD_PARTY_LIST = "PARAM_THIRD_PARTY_LIST";
+    public static final String PARAM_THIRD_PARTY_TAB = "PARAM_THIRD_PARTY_TAB";
 
     private TextView mTvTitleRight;
     private ViewPager mViewPager;
-    private FragmentPagerAdapter mPagerAdapter;
+    private FragmentStatePagerAdapter mPagerAdapter;
 
-    private ArrayList<String> mSelectedResultList = new ArrayList<>();
-    private ArrayList<String> mSelectedImageList = new ArrayList<>();
+    private ArrayList<String> mSelectedList;
+    private ArrayList<String> mThirdPartyList;
     private int mMaxCount;
+    private int mImageMaxCount;
+    private int mVideoMaxCount;
+    private int mThirdPartyMaxCount;
 
     private int mCurrentPosition = 0;
     private String[] mTabArr;
-    private SwitchType mSwitchType;
+    private SelectType mSelectType;
 
-    public static void show(Activity activity, int requestCode, SwitchType switchType, ArrayList<String> selectedList, int maxCount) {
+    public static void show(Activity activity, int requestCode, SelectType selectType, ArrayList<String> selectedList, int imageMaxCount, int videoMaxCount, int
+            totalMaxCount) {
         Intent intent = new Intent(activity, ResourceSelectActivity.class);
         intent.putExtra(PARAM_SELECTED_LIST, selectedList);
-        intent.putExtra(PARAM_MAX_COUNT, maxCount);
-        intent.putExtra(PARAM_SWITCH_TYPE, switchType);
+        intent.putExtra(ImageSelectConstants.PARAM_MAX_COUNT, totalMaxCount);
+        intent.putExtra(ImageSelectConstants.PARAM_IMAGE_MAX_COUNT, imageMaxCount);
+        intent.putExtra(ImageSelectConstants.PARAM_VIDEO_MAX_COUNT, videoMaxCount);
+        intent.putExtra(ImageSelectConstants.PARAM_SELECT_TYPE, selectType);
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    public static void showThirdParty(Activity activity, int requestCode, SelectType selectType, ArrayList<String> selectedList, int imageMaxCount, int videoMaxCount,
+                                      int thirdPartyMaxCount, int totalMaxCount, ArrayList<String> thirdPartyList, String thirdPatryTabName) {
+        Intent intent = new Intent(activity, ResourceSelectActivity.class);
+        intent.putExtra(ImageSelectConstants.PARAM_MAX_COUNT, totalMaxCount);
+        intent.putExtra(ImageSelectConstants.PARAM_IMAGE_MAX_COUNT, imageMaxCount);
+        intent.putExtra(ImageSelectConstants.PARAM_VIDEO_MAX_COUNT, videoMaxCount);
+        intent.putExtra(ImageSelectConstants.PARAM_THIRD_PARTY_MAX_COUNT, thirdPartyMaxCount);
+        intent.putExtra(ImageSelectConstants.PARAM_SELECT_TYPE, selectType);
+        intent.putExtra(PARAM_SELECTED_LIST, selectedList);
+        intent.putExtra(PARAM_THIRD_PARTY_LIST, thirdPartyList);
+        intent.putExtra(PARAM_THIRD_PARTY_TAB, thirdPatryTabName);
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -60,13 +81,21 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
 
     @Override
     protected void initParams() {
-        mSwitchType = (SwitchType) getIntent().getSerializableExtra(PARAM_SWITCH_TYPE);
-        mMaxCount = getIntent().getIntExtra(PARAM_MAX_COUNT, DEFAULT_IMAGE_MAX_COUNT);
-        mSelectedImageList = (ArrayList<String>) getIntent().getSerializableExtra(PARAM_SELECTED_LIST);
-        if (mSelectedImageList == null) {
-            mSelectedImageList = new ArrayList<>();
+        mSelectType = (SelectType) getIntent().getSerializableExtra(ImageSelectConstants.PARAM_SELECT_TYPE);
+        mMaxCount = getIntent().getIntExtra(ImageSelectConstants.PARAM_MAX_COUNT, ImageSelectConstants.DEFAULT_MAX_COUNT);
+        mImageMaxCount = getIntent().getIntExtra(ImageSelectConstants.PARAM_IMAGE_MAX_COUNT, ImageSelectConstants.DEFAULT_IMAGE_MAX_COUNT);
+        mVideoMaxCount = getIntent().getIntExtra(ImageSelectConstants.PARAM_VIDEO_MAX_COUNT, ImageSelectConstants.DEFAULT_VIDEO_MAX_COUNT);
+        mThirdPartyMaxCount = getIntent().getIntExtra(ImageSelectConstants.PARAM_THIRD_PARTY_MAX_COUNT, ImageSelectConstants.DEFAULT_MAX_COUNT);
+        mSelectedList = (ArrayList<String>) getIntent().getSerializableExtra(PARAM_SELECTED_LIST);
+        mThirdPartyList = (ArrayList<String>) getIntent().getSerializableExtra(PARAM_THIRD_PARTY_LIST);
+        if (mSelectedList == null) {
+            mSelectedList = new ArrayList<>();
         }
-        switch (mSwitchType) {
+        if (mThirdPartyList == null) {
+            mThirdPartyList = new ArrayList<>();
+        }
+        String thirdPartyTabName = getIntent().getStringExtra(PARAM_THIRD_PARTY_TAB);
+        switch (mSelectType) {
             case IMAGE:
                 mTabArr = new String[]{"图片"};
                 break;
@@ -74,13 +103,13 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
                 mTabArr = new String[]{"视频"};
                 break;
             case THIRD_PARTY:
-                mTabArr = new String[]{"云盘"};
+                mTabArr = new String[]{thirdPartyTabName};
                 break;
             case IMAGE_AND_VIDEO:
                 mTabArr = new String[]{"图片", "视频"};
                 break;
             case ALL:
-                mTabArr = new String[]{"图片", "视频", "云盘"};
+                mTabArr = new String[]{"图片", "视频", thirdPartyTabName};
                 break;
         }
     }
@@ -93,10 +122,10 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
             tabLayout.setVisibility(View.GONE);
         }
         mViewPager = bindView(R.id.vp_resource_select);
-        mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+        mPagerAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                return getFragment(position, mSwitchType);
+                return getFragment(position, mSelectType);
             }
 
             @Override
@@ -118,6 +147,7 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
             @Override
             public void onPageSelected(int position) {
                 mCurrentPosition = position;
+                onSelectedListChange(mSelectedList.size(), mMaxCount);
             }
 
             @Override
@@ -130,34 +160,14 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
         tabLayout.setupWithViewPager(mViewPager);
     }
 
-    private XLBaseFragment getFragment(int position, SwitchType type) {
+    private XLBaseFragment getFragment(int position, SelectType type) {
         XLBaseFragment fragment;
-        switch (position) {
-            case 0:
-                switch (type) {
-                    case IMAGE:
-                        fragment = ImageSelectFragment.newInstance(mMaxCount, mSelectedImageList);
-                        break;
-                    case VIDEO:
-                        fragment = VideoSelectFragment.newInstance(mMaxCount, mSelectedImageList);
-                        break;
-                    case THIRD_PARTY:
-                        //TODO 第三方
-                        fragment = null;
-                        break;
-                    default:
-                        fragment = ImageSelectFragment.newInstance(mMaxCount, mSelectedImageList);
-                        break;
-                }
-                break;
-            case 1:
-                fragment = VideoSelectFragment.newInstance(mMaxCount, mSelectedImageList);
-                break;
-            case 2:
-                //TODO 第三方
-            default:
-                fragment = ImageSelectFragment.newInstance(mMaxCount, mSelectedImageList);
-                break;
+        if (position == 0 && type == SelectType.VIDEO || position == 1) {
+            fragment = VideoSelectFragment.newInstance(mVideoMaxCount, mMaxCount, mSelectType);
+        } else if (position == 0 && type == SelectType.THIRD_PARTY || position == 2) {
+            fragment = ThirdPartySelectFragment.newInstance(mThirdPartyMaxCount, mMaxCount, mThirdPartyList, mSelectType);
+        } else {
+            fragment = ImageSelectFragment.newInstance(mImageMaxCount, mMaxCount, mSelectType);
         }
         return fragment;
     }
@@ -168,8 +178,7 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
         switch (v.getId()) {
             case R.id.title_right_text:
                 Intent data = new Intent();
-                mSelectedResultList.addAll(getCurrentFragment().getSelectedList());
-                data.putExtra(PARAM_SELECTED_RESULT_LIST, mSelectedResultList);
+                data.putExtra(PARAM_SELECTED_LIST, mSelectedList);
                 setResult(RESULT_SELECTED, data);
                 finish();
                 break;
@@ -185,7 +194,12 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
         mTvTitleRight.setText(String.format(Locale.getDefault(), "完成%d/%d", selectedCount, maxCount));
     }
 
-    public enum SwitchType implements Serializable {
+    @Override
+    public ArrayList<String> getSelectedList() {
+        return mSelectedList;
+    }
+
+    public enum SelectType implements Serializable {
         IMAGE,
         VIDEO,
         THIRD_PARTY,
