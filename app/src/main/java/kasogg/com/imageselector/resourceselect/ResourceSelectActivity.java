@@ -4,29 +4,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 
 import kasogg.com.imageselector.R;
 import kasogg.com.imageselector.XLBaseActivity;
-import kasogg.com.imageselector.resourceselect.adapter.ResourceSelectAdapter;
+import kasogg.com.imageselector.XLBaseFragment;
 import kasogg.com.imageselector.resourceselect.fragment.BaseSelectFragment;
-import kasogg.com.imageselector.resourceselect.imagefetcher.ResourceFetcher;
-import kasogg.com.imageselector.resourceselect.model.ResourceBucket;
-import kasogg.com.imageselector.resourceselect.model.ResourceItem;
-import kasogg.com.imageselector.resourceselect.widget.BucketListPopupWindow;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by KasoGG on 2016/6/29.
@@ -36,40 +26,28 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
     public static final int FILE_TYPE_IMAGE = 1;
     public static final int FILE_TYPE_VIDEO = 2;
 
-    public static final String PARAM_TAB_COUNT = "PARAM_TAB_COUNT";
+    public static final String PARAM_MAX_COUNT = "PARAM_MAX_COUNT";
     public static final String PARAM_SELECTED_IMAGE_LIST = "PARAM_SELECTED_IMAGE_LIST";
     public static final String PARAM_SELECTED_VIDEO_LIST = "PARAM_SELECTED_VIDEO_LIST";
-    public static final String PARAM_SELECTED_LIST = "PARAM_SELECTED_LIST";
+    public static final String PARAM_SELECTED_RESULT_LIST = "PARAM_SELECTED_RESULT_LIST";
     private static final int DEFAULT_IMAGE_MAX_COUNT = 9;
-    private static final int DEFAULT_VIDEO_MAX_COUNT = 1;
 
     private TextView mTvTitleRight;
-    private ArrayList<String> mSelectedList = new ArrayList<>();
-    private ArrayList<String> mSelectedImagePathList = new ArrayList<>();
-    private ArrayList<String> mSelectedVideoPathList = new ArrayList<>();
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
+    private FragmentPagerAdapter mPagerAdapter;
 
-    private int mFileType = FILE_TYPE_IMAGE;
-    private int mTabCount = 3;
-    private int mImageMaxCount;
-    private int mVideoMaxCount;
+    private ArrayList<String> mSelectedResultList = new ArrayList<>();
+    private ArrayList<String> mSelectedImageList = new ArrayList<>();
+    private int mMaxCount;
 
-    public static void showImageSelect(Activity activity, int requestCode, ArrayList<String> selectedList) {
-        show(activity, requestCode, selectedList, null, FILE_TYPE_IMAGE, DEFAULT_IMAGE_MAX_COUNT, DEFAULT_VIDEO_MAX_COUNT, 1);
-    }
+    private int mCurrentPosition = 0;
+    private String[] mTabArr = new String[]{"图片"};
 
-    public static void showVideoSelect(Activity activity, int requestCode, ArrayList<String> selectedList) {
-        show(activity, requestCode, null, selectedList, FILE_TYPE_VIDEO, DEFAULT_IMAGE_MAX_COUNT, DEFAULT_VIDEO_MAX_COUNT, 1);
-    }
-
-    public static void showAllSelect(Activity activity, int requestCode, ArrayList<String> selectedImageList, ArrayList<String> selectedVideoList) {
-        show(activity, requestCode, selectedImageList, selectedVideoList, FILE_TYPE_IMAGE, DEFAULT_IMAGE_MAX_COUNT, DEFAULT_VIDEO_MAX_COUNT, 2);
-    }
-
-    public static void show(Activity activity, int requestCode, ArrayList<String> selectedImageList, ArrayList<String> selectedVideoList, int defaultFileType, int
-            imageMaxCount, int videoMaxCount, int tabCount) {
+    public static void show(Activity activity, int requestCode, ArrayList<String> selectedImageList, int maxCount) {
         Intent intent = new Intent(activity, ResourceSelectActivity.class);
         intent.putExtra(PARAM_SELECTED_IMAGE_LIST, selectedImageList);
-        intent.putExtra(PARAM_SELECTED_VIDEO_LIST, selectedVideoList);
+        intent.putExtra(PARAM_MAX_COUNT, maxCount);
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -81,50 +59,69 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
 
     @Override
     protected void initParams() {
-        mTabCount = getIntent().getIntExtra(PARAM_TAB_COUNT, 1);
-        mSelectedImagePathList = (ArrayList<String>) getIntent().getSerializableExtra(PARAM_SELECTED_IMAGE_LIST);
-        mSelectedVideoPathList = (ArrayList<String>) getIntent().getSerializableExtra(PARAM_SELECTED_VIDEO_LIST);
-        if (mSelectedImagePathList == null) {
-            mSelectedImagePathList = new ArrayList<>();
-        }
-        if (mSelectedVideoPathList == null) {
-            mSelectedVideoPathList = new ArrayList<>();
+        mSelectedImageList = (ArrayList<String>) getIntent().getSerializableExtra(PARAM_SELECTED_IMAGE_LIST);
+        mMaxCount = getIntent().getIntExtra(PARAM_MAX_COUNT, DEFAULT_IMAGE_MAX_COUNT);
+        if (mSelectedImageList == null) {
+            mSelectedImageList = new ArrayList<>();
         }
     }
 
     @Override
     protected void initViews() {
-        initTabLayout();
         mTvTitleRight = bindViewWithClick(R.id.title_right_text);
-        initTabContent();
-        initData(true);
-    }
-
-    private void initTabLayout() {
-        TabLayout tabLayout = bindView(R.id.tabLayout);
-        if (mTabCount == 1) {
-            tabLayout.setVisibility(View.GONE);
-            return;
-        }
-        tabLayout.addTab(tabLayout.newTab().setText("照片"));
-        tabLayout.addTab(tabLayout.newTab().setText("视频"));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        mTabLayout = bindView(R.id.tabLayout_resource_select);
+        mViewPager = bindView(R.id.vp_resource_select);
+        mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                mFileType = "照片".equals(tab.getText()) ? FILE_TYPE_IMAGE : FILE_TYPE_VIDEO;
+            public Fragment getItem(int position) {
+                return getFragment(position);
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+            public int getCount() {
+                return mTabArr.length;
             }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+            public CharSequence getPageTitle(int position) {
+                return mTabArr[position];
+            }
+        };
+        mViewPager.setAdapter(mPagerAdapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mCurrentPosition = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
             }
         });
+        if (mCurrentPosition != 0) {
+            mViewPager.setCurrentItem(mCurrentPosition);
+        }
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    private void initData(boolean refresh) {
+    private XLBaseFragment getFragment(int position) {
+        XLBaseFragment fragment;
+        switch (position) {
+            case 0:
+                fragment = BaseSelectFragment.newInstance(mMaxCount, mSelectedImageList);
+                break;
+            default:
+                fragment = BaseSelectFragment.newInstance(mMaxCount, mSelectedImageList);
+                break;
+        }
+        return fragment;
+    }
+
+    private void initData() {
 
     }
 
@@ -134,16 +131,21 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
         switch (v.getId()) {
             case R.id.title_right_text:
                 Intent data = new Intent();
-                data.putExtra(PARAM_SELECTED_LIST, mSelectedList);
+                mSelectedResultList.addAll(getCurrentFragment().getSelectedList());
+                data.putExtra(PARAM_SELECTED_RESULT_LIST, mSelectedResultList);
                 setResult(RESULT_SELECTED, data);
                 finish();
                 break;
         }
     }
 
+    private BaseSelectFragment getCurrentFragment() {
+        return (BaseSelectFragment) mPagerAdapter.instantiateItem(mViewPager, mCurrentPosition);
+    }
+
     @Override
     public void onSelectedListChange(int selectedCount, int maxCount) {
-        mTvTitleRight.setText("完成 " + selectedCount + "/" + maxCount);
+        mTvTitleRight.setText(String.format(Locale.getDefault(), "完成%d/%d", selectedCount, maxCount));
     }
 
     public enum SwitchType {

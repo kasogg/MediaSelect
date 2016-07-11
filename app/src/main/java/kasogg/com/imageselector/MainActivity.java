@@ -29,7 +29,7 @@ public class MainActivity extends XLBaseActivity {
         findViewById(R.id.tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ResourceSelectActivity.showAllSelect(MainActivity.this, REQUEST_SELECT_IMAGE, mSelectedImageList, mSelectedVideoList);
+                ResourceSelectActivity.show(MainActivity.this, REQUEST_SELECT_IMAGE, mSelectedImageList, 9);
             }
         });
     }
@@ -40,8 +40,7 @@ public class MainActivity extends XLBaseActivity {
         if (requestCode == REQUEST_SELECT_IMAGE) {
             switch (resultCode) {
                 case ResourceSelectActivity.RESULT_SELECTED:
-                    mSelectedImageList = (ArrayList<String>) data.getSerializableExtra(ResourceSelectActivity.PARAM_SELECTED_IMAGE_LIST);
-                    mSelectedVideoList = (ArrayList<String>) data.getSerializableExtra(ResourceSelectActivity.PARAM_SELECTED_VIDEO_LIST);
+                    mSelectedImageList = (ArrayList<String>) data.getSerializableExtra(ResourceSelectActivity.PARAM_SELECTED_RESULT_LIST);
                     Toast.makeText(getApplicationContext(), "大小" + mSelectedImageList.size() + "张", Toast.LENGTH_SHORT).show();
             }
         }

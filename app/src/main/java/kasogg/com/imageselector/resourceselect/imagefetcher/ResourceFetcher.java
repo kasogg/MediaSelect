@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,8 +67,6 @@ public class ResourceFetcher {
 
     /**
      * 得到图片集
-     *
-     * @param context
      */
     private static void buildBucketMap(Context context, int fileType) {
         String columns[] = new String[]{Media._ID, Media.BUCKET_ID, Media.DATE_MODIFIED, Media.DATA, Media.BUCKET_DISPLAY_NAME, Media.SIZE};
@@ -78,7 +77,7 @@ public class ResourceFetcher {
             queryUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
         }
 
-        mBucketMap = new HashMap<>();
+        mBucketMap = new LinkedHashMap<>();
         ResourceBucket bucketAll = new ResourceBucket();
         bucketAll.bucketName = mFileType == ResourceSelectActivity.FILE_TYPE_IMAGE ? "所有图片" : "所有视频";
         bucketAll.selected = true;

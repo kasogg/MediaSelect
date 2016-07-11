@@ -31,7 +31,7 @@ import rx.schedulers.Schedulers;
  * Created by KasoGG on 2016/7/8.
  */
 public class BaseSelectFragment extends XLBaseFragment implements ResourceSelectAdapter.OnItemClickListener {
-    public static final String PARAM_SELECTED_LIST = "PARAM_SELECTED_LIST";
+    public static final String PARAM_SELECTED_LIST = "PARAM_SELECTED_RESULT_LIST";
     public static final String PARAM_MAX_COUNT = "PARAM_IMAGE_MAX_COUNT";
     protected static final int DEFAULT_MAX_COUNT = 9;
     protected static final int COLUMN_COUNT = 4;
@@ -90,14 +90,13 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
         mAdapter.setOnItemClickListener(this);
         recyclerView.setAdapter(mAdapter);
         initTabContent();
-        initData(true);
     }
 
     @Override
     public void bindData() {
         final long startTime = System.currentTimeMillis();
-        Observable.from(mBucketList = ResourceFetcher.getBucketList(getActivity(), true, mFileType)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers
-                .mainThread()).doOnNext(new Action1<ResourceBucket>() {
+        Observable.from(mBucketList = ResourceFetcher.getBucketList(getActivity(), mFileType)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<ResourceBucket>() {
             @Override
             public void call(ResourceBucket resourceBucket) {
                 mPopupWindow = new BucketListPopupWindow(getActivity(), (int) (getActivity().getWindowManager().getDefaultDisplay().getHeight() * 0.65), mBucketList,
@@ -137,7 +136,6 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
     public void onAddClick(ResourceSelectAdapter.ViewHolder viewHolder) {
         //TODO 拍照 视频
         Toast.makeText(getContext(), "拍照", Toast.LENGTH_SHORT).show();
-        Log.d("asd", "TAKE");
     }
 
     @Override
@@ -159,10 +157,6 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
         int selectedCount = mSelectedList.size();
         mTvPreview.setEnabled(selectedCount > 0);
         mListener.onSelectedListChange(selectedCount, mMaxCount);
-    }
-
-    private void initData(boolean refresh) {
-
     }
 
     private void filterSelectedResource() {
@@ -195,6 +189,10 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
                 //TODO 打开预览图片
                 break;
         }
+    }
+
+    public ArrayList<String> getSelectedList() {
+        return mSelectedList;
     }
 
     @Override
