@@ -29,7 +29,7 @@ public class MainActivity extends XLBaseActivity {
         findViewById(R.id.tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ResourceSelectActivity.show(MainActivity.this, REQUEST_SELECT_IMAGE, mSelectedImageList, 9);
+                ResourceSelectActivity.show(MainActivity.this, REQUEST_SELECT_IMAGE, ResourceSelectActivity.SwitchType.IMAGE_AND_VIDEO, mSelectedImageList, 9);
             }
         });
     }

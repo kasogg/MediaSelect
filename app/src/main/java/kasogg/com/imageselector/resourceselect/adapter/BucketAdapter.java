@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
+import java.util.Locale;
 
 import kasogg.com.imageselector.R;
 import kasogg.com.imageselector.resourceselect.ResourceSelectActivity;
@@ -36,11 +37,11 @@ public class BucketAdapter extends RecyclerView.Adapter<BucketAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(final ViewHolder viewHolder, int position) {
         final ResourceBucket item = mImageItemList.get(position);
         viewHolder.tvBucketName.setText(item.bucketName);
         String suffix = mFileType == ResourceSelectActivity.FILE_TYPE_IMAGE ? "张图片" : "个视频";
-        viewHolder.tvImageCount.setText(String.valueOf(item.count) + suffix);
+        viewHolder.tvImageCount.setText(String.format(Locale.getDefault(), "%d%s", item.count, suffix));
         if (item.imageList != null && item.imageList.size() > 0) {
             Glide.with(mContext).load(item.imageList.get(0).sourcePath).into(viewHolder.ivBucket);
         }
@@ -48,7 +49,7 @@ public class BucketAdapter extends RecyclerView.Adapter<BucketAdapter.ViewHolder
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnItemClickListener.onItemClick(position, item);
+                    mOnItemClickListener.onItemClick(viewHolder.getAdapterPosition(), item);
                 }
             });
         }

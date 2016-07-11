@@ -12,10 +12,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import kasogg.com.imageselector.R;
 import kasogg.com.imageselector.XLBaseFragment;
 import kasogg.com.imageselector.resourceselect.ResourceSelectActivity;
+import kasogg.com.imageselector.resourceselect.ResourceSelectActivity.SwitchType;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceSelectAdapter;
 import kasogg.com.imageselector.resourceselect.imagefetcher.ResourceFetcher;
 import kasogg.com.imageselector.resourceselect.model.ResourceBucket;
@@ -27,12 +29,11 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by KasoGG on 2016/7/8.
- */
 public class BaseSelectFragment extends XLBaseFragment implements ResourceSelectAdapter.OnItemClickListener {
     public static final String PARAM_SELECTED_LIST = "PARAM_SELECTED_RESULT_LIST";
-    public static final String PARAM_MAX_COUNT = "PARAM_IMAGE_MAX_COUNT";
+    public static final String PARAM_FILE_TYPE = "PARAM_FILE_TYPE";
+    public static final String PARAM_SELECT_TYPE = "PARAM_SELECT_TYPE";
+    public static final String PARAM_MAX_COUNT = "PARAM_MAX_COUNT";
     protected static final int DEFAULT_MAX_COUNT = 9;
     protected static final int COLUMN_COUNT = 4;
 
@@ -48,15 +49,7 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
     protected ArrayList<String> mSelectedList = new ArrayList<>();
     protected int mMaxCount;
     protected int mFileType = ResourceSelectActivity.FILE_TYPE_IMAGE;
-
-    public static BaseSelectFragment newInstance(int maxCount, ArrayList<String> selectedList) {
-        BaseSelectFragment fragment = new BaseSelectFragment();
-        Bundle args = new Bundle();
-        args.putInt(PARAM_MAX_COUNT, maxCount);
-        args.putSerializable(PARAM_SELECTED_LIST, selectedList);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    protected SwitchType mSwitchType;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,6 +65,7 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
     protected void initParams() {
         if (getArguments() != null) {
             mMaxCount = getArguments().getInt(PARAM_MAX_COUNT, DEFAULT_MAX_COUNT);
+            mSwitchType = (SwitchType) getArguments().getSerializable(PARAM_SELECT_TYPE);
             mSelectedList = (ArrayList<String>) getArguments().getSerializable(PARAM_SELECTED_LIST);
         }
         if (mSelectedList == null) {
@@ -146,7 +140,7 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
             mSelectedList.add(item.sourcePath);
         } else {
             mAdapter.selectItem(viewHolder, item, false);
-            Toast.makeText(getContext(), "您最多能选择" + mMaxCount + "张图片", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), String.format(Locale.getDefault(), "您最多能选择%d个资源", mMaxCount), Toast.LENGTH_SHORT).show();
         }
         int selectedCount = mSelectedList.size();
         mTvPreview.setEnabled(selectedCount > 0);

@@ -6,13 +6,13 @@ import java.util.ArrayList;
 
 import kasogg.com.imageselector.resourceselect.ResourceSelectActivity;
 
-public class VideoSelectFragment extends BaseSelectFragment {
+public class ImageSelectFragment extends BaseSelectFragment {
 
-    public static VideoSelectFragment newInstance(int maxCount, ArrayList<String> selectedList) {
-        VideoSelectFragment fragment = new VideoSelectFragment();
+    public static ImageSelectFragment newInstance(int maxCount, ArrayList<String> selectedList) {
+        ImageSelectFragment fragment = new ImageSelectFragment();
         Bundle args = new Bundle();
         args.putInt(PARAM_MAX_COUNT, maxCount);
-        args.putInt(PARAM_FILE_TYPE, ResourceSelectActivity.FILE_TYPE_VIDEO);
+        args.putInt(PARAM_FILE_TYPE, ResourceSelectActivity.FILE_TYPE_IMAGE);
         args.putSerializable(PARAM_SELECTED_LIST, selectedList);
         fragment.setArguments(args);
         return fragment;
@@ -21,6 +21,7 @@ public class VideoSelectFragment extends BaseSelectFragment {
     @Override
     protected void initParams() {
         super.initParams();
-        mFileType = ResourceSelectActivity.FILE_TYPE_VIDEO;
+        mFileType = ResourceSelectActivity.FILE_TYPE_IMAGE;
     }
+
 }
