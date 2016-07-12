@@ -7,7 +7,6 @@ import android.widget.Toast;
 import java.util.Locale;
 
 import kasogg.com.imageselector.R;
-import kasogg.com.imageselector.resourceselect.ResourceSelectActivity;
 import kasogg.com.imageselector.resourceselect.ResourceSelectActivity.SelectType;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceSelectAdapter;
 import kasogg.com.imageselector.resourceselect.constants.ResourceSelectConstants;
@@ -27,7 +26,7 @@ public class ImageSelectFragment extends BaseSelectFragment {
     @Override
     protected void initParams() {
         super.initParams();
-        mFileType = ResourceSelectActivity.FILE_TYPE_IMAGE;
+        mFileType = ResourceSelectConstants.FILE_TYPE_IMAGE;
         mToastStr = String.format(Locale.getDefault(), "您最多能选择%d张图片", mPageMaxCount);
     }
 

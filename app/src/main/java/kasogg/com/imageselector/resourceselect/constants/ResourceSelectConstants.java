@@ -14,6 +14,10 @@ public class ResourceSelectConstants {
     public static final String PARAM_THIRD_PARTY_LIST = "PARAM_THIRD_PARTY_LIST";
     public static final String PARAM_THIRD_PARTY_TAB = "PARAM_THIRD_PARTY_TAB";
 
+    public static final int FILE_TYPE_IMAGE = 1;
+    public static final int FILE_TYPE_VIDEO = 2;
+    public static final int FILE_TYPE_OTHER = 3;
+
     public static final int DEFAULT_MAX_COUNT = 9;
     public static final int DEFAULT_IMAGE_MAX_COUNT = 9;
     public static final int DEFAULT_VIDEO_MAX_COUNT = 1;

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Locale;
 
 import kasogg.com.imageselector.R;
-import kasogg.com.imageselector.resourceselect.ResourceSelectActivity;
 import kasogg.com.imageselector.resourceselect.ResourceSelectActivity.SelectType;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceSelectAdapter;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceThirdPartySelectAdapter;
@@ -38,7 +37,7 @@ public class ThirdPartySelectFragment extends BaseSelectFragment {
     @Override
     protected void initParams() {
         super.initParams();
-        mFileType = ResourceSelectActivity.FILE_TYPE_OTHER;
+        mFileType = ResourceSelectConstants.FILE_TYPE_OTHER;
         if (getArguments() != null) {
             mThirdPartyList = (ArrayList<String>) getArguments().getSerializable(ResourceSelectConstants.PARAM_THIRD_PARTY_LIST);
         }

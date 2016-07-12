@@ -25,9 +25,6 @@ import kasogg.com.imageselector.resourceselect.fragment.VideoSelectFragment;
 
 public class ResourceSelectActivity extends XLBaseActivity implements BaseSelectFragment.OnFragmentInteractionListener {
     public static final int RESULT_SELECTED = 1;
-    public static final int FILE_TYPE_IMAGE = 1;
-    public static final int FILE_TYPE_VIDEO = 2;
-    public static final int FILE_TYPE_OTHER = 3;
 
     public static final String PARAM_SELECTED_LIST = "PARAM_SELECTED_LIST";
 

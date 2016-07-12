@@ -16,10 +16,9 @@ import java.util.Locale;
 
 import kasogg.com.imageselector.R;
 import kasogg.com.imageselector.XLBaseFragment;
-import kasogg.com.imageselector.resourceselect.constants.ResourceSelectConstants;
-import kasogg.com.imageselector.resourceselect.ResourceSelectActivity;
 import kasogg.com.imageselector.resourceselect.ResourceSelectActivity.SelectType;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceSelectAdapter;
+import kasogg.com.imageselector.resourceselect.constants.ResourceSelectConstants;
 import kasogg.com.imageselector.resourceselect.imagefetcher.ResourceFetcher;
 import kasogg.com.imageselector.resourceselect.model.ResourceBucket;
 import kasogg.com.imageselector.resourceselect.model.ResourceItem;
@@ -43,7 +42,7 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
     protected ArrayList<ResourceItem> mSelectedList = new ArrayList<>();
     protected int mMaxCount;
     protected int mPageMaxCount;
-    protected int mFileType = ResourceSelectActivity.FILE_TYPE_IMAGE;
+    protected int mFileType = ResourceSelectConstants.FILE_TYPE_IMAGE;
     protected SelectType mSelectType;
     protected String mToastStr;
 
@@ -64,7 +63,7 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
             mPageMaxCount = getArguments().getInt(ResourceSelectConstants.PARAM_PAGE_MAX_COUNT, ResourceSelectConstants.DEFAULT_IMAGE_MAX_COUNT);
             mSelectType = (SelectType) getArguments().getSerializable(ResourceSelectConstants.PARAM_SELECT_TYPE);
         }
-        mFileType = ResourceSelectActivity.FILE_TYPE_IMAGE;
+        mFileType = ResourceSelectConstants.FILE_TYPE_IMAGE;
     }
 
     @Override
