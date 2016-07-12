@@ -30,8 +30,6 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
     public static final int FILE_TYPE_OTHER = 3;
 
     public static final String PARAM_SELECTED_LIST = "PARAM_SELECTED_LIST";
-    public static final String PARAM_THIRD_PARTY_LIST = "PARAM_THIRD_PARTY_LIST";
-    public static final String PARAM_THIRD_PARTY_TAB = "PARAM_THIRD_PARTY_TAB";
 
     private TextView mTvTitleRight;
     private ViewPager mViewPager;
@@ -68,8 +66,8 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
         intent.putExtra(ResourceSelectConstants.PARAM_THIRD_PARTY_MAX_COUNT, thirdPartyMaxCount);
         intent.putExtra(ResourceSelectConstants.PARAM_SELECT_TYPE, selectType);
         intent.putExtra(PARAM_SELECTED_LIST, selectedList);
-        intent.putExtra(PARAM_THIRD_PARTY_LIST, thirdPartyList);
-        intent.putExtra(PARAM_THIRD_PARTY_TAB, thirdPatryTabName);
+        intent.putExtra(ResourceSelectConstants.PARAM_THIRD_PARTY_LIST, thirdPartyList);
+        intent.putExtra(ResourceSelectConstants.PARAM_THIRD_PARTY_TAB, thirdPatryTabName);
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -87,14 +85,14 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
         mVideoMaxCount = getIntent().getIntExtra(ResourceSelectConstants.PARAM_VIDEO_MAX_COUNT, ResourceSelectConstants.DEFAULT_VIDEO_MAX_COUNT);
         mThirdPartyMaxCount = getIntent().getIntExtra(ResourceSelectConstants.PARAM_THIRD_PARTY_MAX_COUNT, ResourceSelectConstants.DEFAULT_MAX_COUNT);
         mSelectedList = (ArrayList<String>) getIntent().getSerializableExtra(PARAM_SELECTED_LIST);
-        mThirdPartyList = (ArrayList<String>) getIntent().getSerializableExtra(PARAM_THIRD_PARTY_LIST);
+        mThirdPartyList = (ArrayList<String>) getIntent().getSerializableExtra(ResourceSelectConstants.PARAM_THIRD_PARTY_LIST);
         if (mSelectedList == null) {
             mSelectedList = new ArrayList<>();
         }
         if (mThirdPartyList == null) {
             mThirdPartyList = new ArrayList<>();
         }
-        String thirdPartyTabName = getIntent().getStringExtra(PARAM_THIRD_PARTY_TAB);
+        String thirdPartyTabName = getIntent().getStringExtra(ResourceSelectConstants.PARAM_THIRD_PARTY_TAB);
         switch (mSelectType) {
             case IMAGE:
                 mTabArr = new String[]{"图片"};

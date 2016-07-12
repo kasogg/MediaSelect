@@ -29,7 +29,7 @@ public class ThirdPartySelectFragment extends BaseSelectFragment {
         Bundle args = new Bundle();
         args.putInt(ResourceSelectConstants.PARAM_MAX_COUNT, maxCount);
         args.putInt(ResourceSelectConstants.PARAM_PAGE_MAX_COUNT, pageMaxCount);
-        args.putSerializable(ResourceSelectActivity.PARAM_THIRD_PARTY_LIST, thirdPartyList);
+        args.putSerializable(ResourceSelectConstants.PARAM_THIRD_PARTY_LIST, thirdPartyList);
         args.putSerializable(ResourceSelectConstants.PARAM_SELECT_TYPE, selectType);
         fragment.setArguments(args);
         return fragment;
@@ -40,7 +40,7 @@ public class ThirdPartySelectFragment extends BaseSelectFragment {
         super.initParams();
         mFileType = ResourceSelectActivity.FILE_TYPE_OTHER;
         if (getArguments() != null) {
-            mThirdPartyList = (ArrayList<String>) getArguments().getSerializable(ResourceSelectActivity.PARAM_THIRD_PARTY_LIST);
+            mThirdPartyList = (ArrayList<String>) getArguments().getSerializable(ResourceSelectConstants.PARAM_THIRD_PARTY_LIST);
         }
         if (mThirdPartyList == null) {
             mThirdPartyList = new ArrayList<>();
