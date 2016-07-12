@@ -31,6 +31,6 @@ public class GlideImageLoader implements ImageLoader {
     }
 
     private static class Nested {
-        private static GlideImageLoader instance = new GlideImageLoader();
+        private static final GlideImageLoader instance = new GlideImageLoader();
     }
 }

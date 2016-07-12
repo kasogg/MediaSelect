@@ -2,6 +2,7 @@ package kasogg.com.imageselector.resourceselect.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 
@@ -34,7 +35,7 @@ public class ResourceItem implements Serializable, Comparable, Parcelable {
     }
 
     @Override
-    public int compareTo(Object another) {
+    public int compareTo(@NonNull Object another) {
         if (!(another instanceof ResourceItem)) {
             return -1;
         }

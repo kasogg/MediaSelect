@@ -1,6 +1,7 @@
 package kasogg.com.imageselector.resourceselect.widget;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,16 +36,12 @@ public class BucketListPopupWindow extends PopupWindow {
     }
 
     public BucketListPopupWindow(Activity context, int height, List<ResourceBucket> bucketList, int fileType) {
-        this(context, ViewGroup.LayoutParams.MATCH_PARENT, height, bucketList, fileType);
-    }
-
-    public BucketListPopupWindow(Activity context, int width, int height, List<ResourceBucket> bucketList, int fileType) {
-        super(width, height);
+        super(ViewGroup.LayoutParams.MATCH_PARENT, height);
         mContext = context;
         mBucketList = bucketList;
         mFileType = fileType;
         setAnimationStyle(R.style.AnimBottom);
-        setBackgroundDrawable(new BitmapDrawable());
+        setBackgroundDrawable(new BitmapDrawable(context.getResources(), (Bitmap) null));
         setOutsideTouchable(true);
         setFocusable(true);
         setOnDismissListener(new OnDismissListener() {
