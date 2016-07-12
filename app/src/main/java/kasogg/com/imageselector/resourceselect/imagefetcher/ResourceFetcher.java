@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import kasogg.com.imageselector.resourceselect.ResourceSelectActivity;
+import kasogg.com.imageselector.resourceselect.constants.ResourceSelectConstants;
 import kasogg.com.imageselector.resourceselect.model.ResourceBucket;
 import kasogg.com.imageselector.resourceselect.model.ResourceItem;
 
@@ -41,7 +41,7 @@ public class ResourceFetcher {
         mFileType = fileType;
         if (refresh) {
             buildBucketMap(context, fileType);
-            if (mFileType == ResourceSelectActivity.FILE_TYPE_IMAGE) {
+            if (mFileType == ResourceSelectConstants.FILE_TYPE_IMAGE) {
                 mImageList = new ArrayList<>();
             } else {
                 mVideoList = new ArrayList<>();
@@ -56,9 +56,9 @@ public class ResourceFetcher {
     }
 
     private static List<ResourceBucket> getCurrentList() {
-        if (mFileType == ResourceSelectActivity.FILE_TYPE_IMAGE) {
+        if (mFileType == ResourceSelectConstants.FILE_TYPE_IMAGE) {
             return mImageList;
-        } else if (mFileType == ResourceSelectActivity.FILE_TYPE_VIDEO) {
+        } else if (mFileType == ResourceSelectConstants.FILE_TYPE_VIDEO) {
             return mVideoList;
         } else {
             return new ArrayList<>();
@@ -71,7 +71,7 @@ public class ResourceFetcher {
     private static void buildBucketMap(Context context, int fileType) {
         String columns[] = new String[]{Media._ID, Media.BUCKET_ID, Media.DATE_MODIFIED, Media.DATA, Media.BUCKET_DISPLAY_NAME, Media.SIZE};
         Uri queryUri = Media.EXTERNAL_CONTENT_URI;
-        if (fileType == ResourceSelectActivity.FILE_TYPE_VIDEO) {
+        if (fileType == ResourceSelectConstants.FILE_TYPE_VIDEO) {
             columns = new String[]{MediaStore.Video.Media._ID, MediaStore.Video.Media.BUCKET_ID, MediaStore.Video.Media.DATE_MODIFIED, MediaStore.Video.Media.DATA,
                     MediaStore.Video.Media.BUCKET_DISPLAY_NAME, MediaStore.Video.Media.SIZE};
             queryUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
@@ -79,7 +79,7 @@ public class ResourceFetcher {
 
         mBucketMap = new LinkedHashMap<>();
         ResourceBucket bucketAll = new ResourceBucket();
-        bucketAll.bucketName = mFileType == ResourceSelectActivity.FILE_TYPE_IMAGE ? "所有图片" : "所有视频";
+        bucketAll.bucketName = mFileType == ResourceSelectConstants.FILE_TYPE_IMAGE ? "所有图片" : "所有视频";
         bucketAll.selected = true;
         bucketAll.imageList = new ArrayList<>();
         mBucketMap.put("-1", bucketAll);

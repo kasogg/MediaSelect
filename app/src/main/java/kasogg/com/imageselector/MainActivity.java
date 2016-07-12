@@ -28,8 +28,7 @@ public class MainActivity extends XLBaseActivity {
         findViewById(R.id.tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ResourceSelectActivity.showThirdParty(MainActivity.this, REQUEST_SELECT_IMAGE, ResourceSelectActivity.SelectType.ALL, mSelectedList, 9, 1, 9, 9, null,
-                        "云盘");
+                ResourceSelectActivity.showImageAndVideoSelect(MainActivity.this, REQUEST_SELECT_IMAGE, mSelectedList, 9, 1, 9);
             }
         });
     }

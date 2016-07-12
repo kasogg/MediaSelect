@@ -43,19 +43,22 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
     private String[] mTabArr;
     private SelectType mSelectType;
 
-    public static void show(Activity activity, int requestCode, SelectType selectType, ArrayList<String> selectedList, int imageMaxCount, int videoMaxCount, int
-            totalMaxCount) {
-        Intent intent = new Intent(activity, ResourceSelectActivity.class);
-        intent.putExtra(PARAM_SELECTED_LIST, selectedList);
-        intent.putExtra(ResourceSelectConstants.PARAM_MAX_COUNT, totalMaxCount);
-        intent.putExtra(ResourceSelectConstants.PARAM_IMAGE_MAX_COUNT, imageMaxCount);
-        intent.putExtra(ResourceSelectConstants.PARAM_VIDEO_MAX_COUNT, videoMaxCount);
-        intent.putExtra(ResourceSelectConstants.PARAM_SELECT_TYPE, selectType);
-        activity.startActivityForResult(intent, requestCode);
+    public static void showImageSelect(Activity activity, int requestCode, ArrayList<String> selectedList, int maxCount) {
+        show(activity, requestCode, SelectType.IMAGE, selectedList, maxCount, maxCount, maxCount, maxCount, null, null);
     }
 
-    public static void showThirdParty(Activity activity, int requestCode, SelectType selectType, ArrayList<String> selectedList, int imageMaxCount, int videoMaxCount,
-                                      int thirdPartyMaxCount, int totalMaxCount, ArrayList<String> thirdPartyList, String thirdPatryTabName) {
+    public static void showVideoSelect(Activity activity, int requestCode, ArrayList<String> selectedList, int maxCount) {
+        show(activity, requestCode, SelectType.VIDEO, selectedList, maxCount, maxCount, maxCount, maxCount, null, null);
+    }
+
+    public static void showImageAndVideoSelect(Activity activity, int requestCode, ArrayList<String> selectedList, int imageMaxCount, int videoMaxCount, int
+            totalMaxCount) {
+        show(activity, requestCode, SelectType.IMAGE_AND_VIDEO, selectedList, imageMaxCount, videoMaxCount, totalMaxCount, totalMaxCount, null, null);
+    }
+
+    public static void show(final Activity activity, final int requestCode, final SelectType selectType, final ArrayList<String> selectedList, final int imageMaxCount,
+                            final int videoMaxCount, final int thirdPartyMaxCount, final int totalMaxCount, final ArrayList<String> thirdPartyList, final String
+                                    thirdPatryTabName) {
         Intent intent = new Intent(activity, ResourceSelectActivity.class);
         intent.putExtra(ResourceSelectConstants.PARAM_MAX_COUNT, totalMaxCount);
         intent.putExtra(ResourceSelectConstants.PARAM_IMAGE_MAX_COUNT, imageMaxCount);
@@ -66,6 +69,7 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
         intent.putExtra(ResourceSelectConstants.PARAM_THIRD_PARTY_LIST, thirdPartyList);
         intent.putExtra(ResourceSelectConstants.PARAM_THIRD_PARTY_TAB, thirdPatryTabName);
         activity.startActivityForResult(intent, requestCode);
+
     }
 
     @Override

@@ -54,7 +54,7 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_image_select;
+        return R.layout.fragment_resource_select;
     }
 
     protected void initParams() {

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Locale;
 
 import kasogg.com.imageselector.R;
-import kasogg.com.imageselector.resourceselect.ResourceSelectActivity;
+import kasogg.com.imageselector.resourceselect.constants.ResourceSelectConstants;
 import kasogg.com.imageselector.resourceselect.model.ResourceBucket;
 
 public class BucketAdapter extends RecyclerView.Adapter<BucketAdapter.ViewHolder> {
@@ -40,7 +40,7 @@ public class BucketAdapter extends RecyclerView.Adapter<BucketAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder viewHolder, int position) {
         final ResourceBucket item = mImageItemList.get(position);
         viewHolder.tvBucketName.setText(item.bucketName);
-        String suffix = mFileType == ResourceSelectActivity.FILE_TYPE_IMAGE ? "张图片" : "个视频";
+        String suffix = mFileType == ResourceSelectConstants.FILE_TYPE_IMAGE ? "张图片" : "个视频";
         viewHolder.tvImageCount.setText(String.format(Locale.getDefault(), "%d%s", item.count, suffix));
         if (item.imageList != null && item.imageList.size() > 0) {
             Glide.with(mContext).load(item.imageList.get(0).sourcePath).into(viewHolder.ivBucket);
