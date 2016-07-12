@@ -133,22 +133,22 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
         if (!item.isSelected) {
             mSelectedList.remove(item);
             commonSelectedList.remove(item.sourcePath);
-        } else if (commonSelectedList.size() < mMaxCount && getSelectedList().size() < mPageMaxCount) {
+        } else if (commonSelectedList.size() < mMaxCount && mSelectedList.size() < mPageMaxCount) {
             mSelectedList.add(item);
             commonSelectedList.add(item.sourcePath);
         } else {
             mAdapter.selectItem(viewHolder, item, false);
-            if (commonSelectedList.size() >= mMaxCount) {
-                Toast.makeText(getContext(), String.format(Locale.getDefault(), "您最多能选择%d个资源", mMaxCount), Toast.LENGTH_SHORT).show();
-            } else {
+            if (mSelectedList.size() >= mPageMaxCount) {
                 Toast.makeText(getContext(), mToastStr, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), String.format(Locale.getDefault(), "您最多能选择%d个资源", mMaxCount), Toast.LENGTH_SHORT).show();
             }
         }
         mTvPreview.setEnabled(mSelectedList.size() > 0);
         if (mSelectType == SelectType.IMAGE_AND_VIDEO || mSelectType == SelectType.ALL) {
             mListener.onSelectedListChange(commonSelectedList.size(), mMaxCount);
         } else {
-            mListener.onSelectedListChange(getSelectedList().size(), mMaxCount);
+            mListener.onSelectedListChange(mSelectedList.size(), mMaxCount);
         }
     }
 
@@ -181,10 +181,6 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
                 }
                 break;
         }
-    }
-
-    public ArrayList<ResourceItem> getSelectedList() {
-        return mSelectedList;
     }
 
     @Override
