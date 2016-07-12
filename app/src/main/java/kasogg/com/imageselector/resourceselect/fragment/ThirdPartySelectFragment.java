@@ -13,7 +13,7 @@ import kasogg.com.imageselector.resourceselect.ResourceSelectActivity;
 import kasogg.com.imageselector.resourceselect.ResourceSelectActivity.SelectType;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceSelectAdapter;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceThirdPartySelectAdapter;
-import kasogg.com.imageselector.resourceselect.constants.ImageSelectConstants;
+import kasogg.com.imageselector.resourceselect.constants.ResourceSelectConstants;
 import kasogg.com.imageselector.resourceselect.model.ResourceItem;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -27,10 +27,10 @@ public class ThirdPartySelectFragment extends BaseSelectFragment {
     public static ThirdPartySelectFragment newInstance(int pageMaxCount, int maxCount, ArrayList<String> thirdPartyList, SelectType selectType) {
         ThirdPartySelectFragment fragment = new ThirdPartySelectFragment();
         Bundle args = new Bundle();
-        args.putInt(ImageSelectConstants.PARAM_MAX_COUNT, maxCount);
-        args.putInt(ImageSelectConstants.PARAM_PAGE_MAX_COUNT, pageMaxCount);
+        args.putInt(ResourceSelectConstants.PARAM_MAX_COUNT, maxCount);
+        args.putInt(ResourceSelectConstants.PARAM_PAGE_MAX_COUNT, pageMaxCount);
         args.putSerializable(ResourceSelectActivity.PARAM_THIRD_PARTY_LIST, thirdPartyList);
-        args.putSerializable(ImageSelectConstants.PARAM_SELECT_TYPE, selectType);
+        args.putSerializable(ResourceSelectConstants.PARAM_SELECT_TYPE, selectType);
         fragment.setArguments(args);
         return fragment;
     }

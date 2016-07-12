@@ -17,7 +17,7 @@ import java.util.Locale;
 import kasogg.com.imageselector.R;
 import kasogg.com.imageselector.XLBaseActivity;
 import kasogg.com.imageselector.XLBaseFragment;
-import kasogg.com.imageselector.resourceselect.constants.ImageSelectConstants;
+import kasogg.com.imageselector.resourceselect.constants.ResourceSelectConstants;
 import kasogg.com.imageselector.resourceselect.fragment.BaseSelectFragment;
 import kasogg.com.imageselector.resourceselect.fragment.ImageSelectFragment;
 import kasogg.com.imageselector.resourceselect.fragment.ThirdPartySelectFragment;
@@ -52,21 +52,21 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
             totalMaxCount) {
         Intent intent = new Intent(activity, ResourceSelectActivity.class);
         intent.putExtra(PARAM_SELECTED_LIST, selectedList);
-        intent.putExtra(ImageSelectConstants.PARAM_MAX_COUNT, totalMaxCount);
-        intent.putExtra(ImageSelectConstants.PARAM_IMAGE_MAX_COUNT, imageMaxCount);
-        intent.putExtra(ImageSelectConstants.PARAM_VIDEO_MAX_COUNT, videoMaxCount);
-        intent.putExtra(ImageSelectConstants.PARAM_SELECT_TYPE, selectType);
+        intent.putExtra(ResourceSelectConstants.PARAM_MAX_COUNT, totalMaxCount);
+        intent.putExtra(ResourceSelectConstants.PARAM_IMAGE_MAX_COUNT, imageMaxCount);
+        intent.putExtra(ResourceSelectConstants.PARAM_VIDEO_MAX_COUNT, videoMaxCount);
+        intent.putExtra(ResourceSelectConstants.PARAM_SELECT_TYPE, selectType);
         activity.startActivityForResult(intent, requestCode);
     }
 
     public static void showThirdParty(Activity activity, int requestCode, SelectType selectType, ArrayList<String> selectedList, int imageMaxCount, int videoMaxCount,
                                       int thirdPartyMaxCount, int totalMaxCount, ArrayList<String> thirdPartyList, String thirdPatryTabName) {
         Intent intent = new Intent(activity, ResourceSelectActivity.class);
-        intent.putExtra(ImageSelectConstants.PARAM_MAX_COUNT, totalMaxCount);
-        intent.putExtra(ImageSelectConstants.PARAM_IMAGE_MAX_COUNT, imageMaxCount);
-        intent.putExtra(ImageSelectConstants.PARAM_VIDEO_MAX_COUNT, videoMaxCount);
-        intent.putExtra(ImageSelectConstants.PARAM_THIRD_PARTY_MAX_COUNT, thirdPartyMaxCount);
-        intent.putExtra(ImageSelectConstants.PARAM_SELECT_TYPE, selectType);
+        intent.putExtra(ResourceSelectConstants.PARAM_MAX_COUNT, totalMaxCount);
+        intent.putExtra(ResourceSelectConstants.PARAM_IMAGE_MAX_COUNT, imageMaxCount);
+        intent.putExtra(ResourceSelectConstants.PARAM_VIDEO_MAX_COUNT, videoMaxCount);
+        intent.putExtra(ResourceSelectConstants.PARAM_THIRD_PARTY_MAX_COUNT, thirdPartyMaxCount);
+        intent.putExtra(ResourceSelectConstants.PARAM_SELECT_TYPE, selectType);
         intent.putExtra(PARAM_SELECTED_LIST, selectedList);
         intent.putExtra(PARAM_THIRD_PARTY_LIST, thirdPartyList);
         intent.putExtra(PARAM_THIRD_PARTY_TAB, thirdPatryTabName);
@@ -81,11 +81,11 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
 
     @Override
     protected void initParams() {
-        mSelectType = (SelectType) getIntent().getSerializableExtra(ImageSelectConstants.PARAM_SELECT_TYPE);
-        mMaxCount = getIntent().getIntExtra(ImageSelectConstants.PARAM_MAX_COUNT, ImageSelectConstants.DEFAULT_MAX_COUNT);
-        mImageMaxCount = getIntent().getIntExtra(ImageSelectConstants.PARAM_IMAGE_MAX_COUNT, ImageSelectConstants.DEFAULT_IMAGE_MAX_COUNT);
-        mVideoMaxCount = getIntent().getIntExtra(ImageSelectConstants.PARAM_VIDEO_MAX_COUNT, ImageSelectConstants.DEFAULT_VIDEO_MAX_COUNT);
-        mThirdPartyMaxCount = getIntent().getIntExtra(ImageSelectConstants.PARAM_THIRD_PARTY_MAX_COUNT, ImageSelectConstants.DEFAULT_MAX_COUNT);
+        mSelectType = (SelectType) getIntent().getSerializableExtra(ResourceSelectConstants.PARAM_SELECT_TYPE);
+        mMaxCount = getIntent().getIntExtra(ResourceSelectConstants.PARAM_MAX_COUNT, ResourceSelectConstants.DEFAULT_MAX_COUNT);
+        mImageMaxCount = getIntent().getIntExtra(ResourceSelectConstants.PARAM_IMAGE_MAX_COUNT, ResourceSelectConstants.DEFAULT_IMAGE_MAX_COUNT);
+        mVideoMaxCount = getIntent().getIntExtra(ResourceSelectConstants.PARAM_VIDEO_MAX_COUNT, ResourceSelectConstants.DEFAULT_VIDEO_MAX_COUNT);
+        mThirdPartyMaxCount = getIntent().getIntExtra(ResourceSelectConstants.PARAM_THIRD_PARTY_MAX_COUNT, ResourceSelectConstants.DEFAULT_MAX_COUNT);
         mSelectedList = (ArrayList<String>) getIntent().getSerializableExtra(PARAM_SELECTED_LIST);
         mThirdPartyList = (ArrayList<String>) getIntent().getSerializableExtra(PARAM_THIRD_PARTY_LIST);
         if (mSelectedList == null) {

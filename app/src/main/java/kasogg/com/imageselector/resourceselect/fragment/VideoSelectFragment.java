@@ -10,15 +10,15 @@ import kasogg.com.imageselector.R;
 import kasogg.com.imageselector.resourceselect.ResourceSelectActivity;
 import kasogg.com.imageselector.resourceselect.ResourceSelectActivity.SelectType;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceSelectAdapter;
-import kasogg.com.imageselector.resourceselect.constants.ImageSelectConstants;
+import kasogg.com.imageselector.resourceselect.constants.ResourceSelectConstants;
 
 public class VideoSelectFragment extends BaseSelectFragment {
     public static VideoSelectFragment newInstance(int pageMaxCount, int maxCount, SelectType selectType) {
         VideoSelectFragment fragment = new VideoSelectFragment();
         Bundle args = new Bundle();
-        args.putInt(ImageSelectConstants.PARAM_MAX_COUNT, maxCount);
-        args.putInt(ImageSelectConstants.PARAM_PAGE_MAX_COUNT, pageMaxCount);
-        args.putSerializable(ImageSelectConstants.PARAM_SELECT_TYPE, selectType);
+        args.putInt(ResourceSelectConstants.PARAM_MAX_COUNT, maxCount);
+        args.putInt(ResourceSelectConstants.PARAM_PAGE_MAX_COUNT, pageMaxCount);
+        args.putSerializable(ResourceSelectConstants.PARAM_SELECT_TYPE, selectType);
         fragment.setArguments(args);
         return fragment;
     }

@@ -16,7 +16,7 @@ import java.util.Locale;
 
 import kasogg.com.imageselector.R;
 import kasogg.com.imageselector.XLBaseFragment;
-import kasogg.com.imageselector.resourceselect.constants.ImageSelectConstants;
+import kasogg.com.imageselector.resourceselect.constants.ResourceSelectConstants;
 import kasogg.com.imageselector.resourceselect.ResourceSelectActivity;
 import kasogg.com.imageselector.resourceselect.ResourceSelectActivity.SelectType;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceSelectAdapter;
@@ -60,9 +60,9 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
 
     protected void initParams() {
         if (getArguments() != null) {
-            mMaxCount = getArguments().getInt(ImageSelectConstants.PARAM_MAX_COUNT, ImageSelectConstants.DEFAULT_MAX_COUNT);
-            mPageMaxCount = getArguments().getInt(ImageSelectConstants.PARAM_PAGE_MAX_COUNT, ImageSelectConstants.DEFAULT_IMAGE_MAX_COUNT);
-            mSelectType = (SelectType) getArguments().getSerializable(ImageSelectConstants.PARAM_SELECT_TYPE);
+            mMaxCount = getArguments().getInt(ResourceSelectConstants.PARAM_MAX_COUNT, ResourceSelectConstants.DEFAULT_MAX_COUNT);
+            mPageMaxCount = getArguments().getInt(ResourceSelectConstants.PARAM_PAGE_MAX_COUNT, ResourceSelectConstants.DEFAULT_IMAGE_MAX_COUNT);
+            mSelectType = (SelectType) getArguments().getSerializable(ResourceSelectConstants.PARAM_SELECT_TYPE);
         }
         mFileType = ResourceSelectActivity.FILE_TYPE_IMAGE;
     }
@@ -72,7 +72,7 @@ public class BaseSelectFragment extends XLBaseFragment implements ResourceSelect
         mTvBucketChoose = bindViewWithClick(R.id.tv_bucket_choose);
         mTvPreview = bindViewWithClick(R.id.tv_preview);
         RecyclerView recyclerView = bindView(R.id.rv_list_resource_select);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), ImageSelectConstants.COLUMN_COUNT));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), ResourceSelectConstants.COLUMN_COUNT));
         initAdapter();
         mAdapter.setOnItemClickListener(this);
         recyclerView.setAdapter(mAdapter);
