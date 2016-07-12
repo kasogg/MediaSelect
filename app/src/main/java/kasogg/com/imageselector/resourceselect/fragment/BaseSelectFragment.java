@@ -16,9 +16,9 @@ import java.util.Locale;
 
 import kasogg.com.imageselector.R;
 import kasogg.com.imageselector.XLBaseFragment;
-import kasogg.com.imageselector.resourceselect.ResourceSelectActivity.SelectType;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceSelectAdapter;
 import kasogg.com.imageselector.resourceselect.constants.ResourceSelectConstants;
+import kasogg.com.imageselector.resourceselect.constants.SelectType;
 import kasogg.com.imageselector.resourceselect.imagefetcher.ResourceFetcher;
 import kasogg.com.imageselector.resourceselect.model.ResourceBucket;
 import kasogg.com.imageselector.resourceselect.model.ResourceItem;

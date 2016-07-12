@@ -7,9 +7,9 @@ import android.widget.Toast;
 import java.util.Locale;
 
 import kasogg.com.imageselector.R;
-import kasogg.com.imageselector.resourceselect.ResourceSelectActivity.SelectType;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceSelectAdapter;
 import kasogg.com.imageselector.resourceselect.constants.ResourceSelectConstants;
+import kasogg.com.imageselector.resourceselect.constants.SelectType;
 
 public class ImageSelectFragment extends BaseSelectFragment {
 

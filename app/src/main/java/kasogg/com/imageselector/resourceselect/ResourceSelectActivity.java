@@ -10,7 +10,6 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -18,6 +17,7 @@ import kasogg.com.imageselector.R;
 import kasogg.com.imageselector.XLBaseActivity;
 import kasogg.com.imageselector.XLBaseFragment;
 import kasogg.com.imageselector.resourceselect.constants.ResourceSelectConstants;
+import kasogg.com.imageselector.resourceselect.constants.SelectType;
 import kasogg.com.imageselector.resourceselect.fragment.BaseSelectFragment;
 import kasogg.com.imageselector.resourceselect.fragment.ImageSelectFragment;
 import kasogg.com.imageselector.resourceselect.fragment.ThirdPartySelectFragment;
@@ -194,11 +194,4 @@ public class ResourceSelectActivity extends XLBaseActivity implements BaseSelect
         return mSelectedList;
     }
 
-    public enum SelectType implements Serializable {
-        IMAGE,
-        VIDEO,
-        THIRD_PARTY,
-        IMAGE_AND_VIDEO,
-        ALL
-    }
 }

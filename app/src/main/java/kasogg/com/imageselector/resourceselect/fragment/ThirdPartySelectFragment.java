@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Locale;
 
 import kasogg.com.imageselector.R;
-import kasogg.com.imageselector.resourceselect.ResourceSelectActivity.SelectType;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceSelectAdapter;
 import kasogg.com.imageselector.resourceselect.adapter.ResourceThirdPartySelectAdapter;
 import kasogg.com.imageselector.resourceselect.constants.ResourceSelectConstants;
+import kasogg.com.imageselector.resourceselect.constants.SelectType;
 import kasogg.com.imageselector.resourceselect.model.ResourceItem;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
